@@ -50,7 +50,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public List<Article> searchArticles(String title, String author, String text,LocalDate startDate, LocalDate endDate, String nation, String domain, String subject)
+    public List<Article> searchArticles(String title, String author, String postAgency,String text,LocalDate startDate, LocalDate endDate, String nation, String domain, String subject)
     {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
 
@@ -62,6 +62,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 添加作者条件
         if (author != null && !author.isEmpty()) {
             queryWrapper.like("author", author);
+        }
+
+        if (postAgency != null && !postAgency.isEmpty()) {
+            queryWrapper.like("text", postAgency);
         }
 
         //添加正文条件

@@ -27,6 +27,6 @@ public interface ArticleService extends IService<Article> {
 
 
     // 搜索文章
-    List<Article> searchArticles(String title,String author,String text, LocalDate startDate, LocalDate endDate, String nation, String domain, String subject);
+    List<Article> searchArticles(String title,String author,String postAgency, String text, LocalDate startDate, LocalDate endDate, String nation, String domain, String subject);
 
 }
