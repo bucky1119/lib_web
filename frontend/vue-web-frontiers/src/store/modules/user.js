@@ -38,10 +38,21 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
         .then((response) => {
-          const { data } = response;
-          commit("SET_TOKEN", data.token);
-          setToken(data.token);
-          resolve();
+          const { data, token } = response;
+          commit("SET_TOKEN", token);
+          setToken(token);
+          // resolve();
+          // get user info
+          const { role, username } = data;
+
+          // // roles must be anon-empty array
+          // if (!roles || roles.length <= 0) {
+          //   reject("getInfo: roles must be a non-null array!");
+          // }
+
+          commit("SET_ROLES", role);
+          commit("SET_NAME", username);
+          resolve(data);
         })
         .catch((error) => {
           reject(error);
@@ -51,17 +62,17 @@ const actions = {
 
   // user  signing
   signin({ commit }, userInfo) {
-    const { username, password, authcode } = userInfo;
+    const { username, password, role } = userInfo;
     return new Promise((resolve, reject) => {
       signin({
         username: username.trim(),
         password: password,
-        authcode: authcode,
+        role: role,
       })
         .then((response) => {
           const { data } = response;
-          commit("SET_TOKEN", data.token);
-          setToken(data.token);
+          // commit("SET_TOKEN", data.token);
+          // setToken(data.token);
           resolve();
         })
         .catch((error) => {

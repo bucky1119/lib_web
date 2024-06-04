@@ -103,6 +103,11 @@
         }
       }
       return {
+        signin: {
+          username: '',
+          password: '',
+          role: 'LIBRARIAN',
+        },
         signinForm: {
           username: '',
           password: '',
@@ -146,9 +151,13 @@
       {
         this.$refs.signinForm.validate(valid =>
         {
+
           if (valid) {
+            this.signin.username = this.signinForm.username
+            this.signin.password = this.signinForm.password
             this.loading = true
-            this.$store.dispatch('user/signin', this.signinForm).then(() =>
+
+            this.$store.dispatch('user/signin', this.signin).then(() =>
             {
               this.$router.push({ path: this.redirect || '/' })
               this.loading = false
