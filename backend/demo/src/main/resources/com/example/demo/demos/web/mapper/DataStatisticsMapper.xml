@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.demos.web.mapper.DataStatisticsMapper">
+    <select id="getVisitCountByDate" resultType="Long">
+        SELECT count FROM visit_count WHERE date = #{date}
+    </select>
+
+    <update id="increaseVisitCount">
+        UPDATE visit_count SET count = count + 1 WHERE date = #{date}
+    </update>
+
+    <insert id="insertVisitCount">
+        INSERT INTO visit_count (date, count) VALUES (#{date}, 0)
+    </insert>
+    <select id="selectTopTenData" resultType="com.example.demo.demos.web.pojo.VisitCount">
+        SELECT * FROM visit_count ORDER BY id DESC LIMIT 10
+    </select>
+</mapper>
