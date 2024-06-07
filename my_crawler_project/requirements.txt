@@ -1,0 +1,8 @@
+celery
+redis
+kombu
+sqlalchemy
+pymysql
+selenium
+pyyaml
+eventlet
