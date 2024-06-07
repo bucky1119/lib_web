@@ -1,6 +1,0 @@
-sites:
-  site1:
-    url: "https://www.industry.gov.au/publications?pub-topic=2906&pub-category=All&publisher=All&field_date_value=All"
-  site2:
-    url: "https://www.arc.gov.au/news-publications/media/media-releases"
-  # 添加更多网站配置
