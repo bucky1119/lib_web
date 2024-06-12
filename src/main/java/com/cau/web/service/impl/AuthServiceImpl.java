@@ -17,8 +17,28 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // 通行口令
+    private static final String ADMIN_TOKEN = "adminSecret";
+    private static final String LIBRARIAN_TOKEN = "librarianSecret";
+    private static final String EXPERT_TOKEN = "expertSecret";
+
     @Override
-    public boolean register(User user) {
+    public boolean register(User user, String token) {
+        // 根据通行口令设置用户角色
+        switch (token) {
+            case ADMIN_TOKEN:
+                user.setRole("ADMIN");
+                break;
+            case LIBRARIAN_TOKEN:
+                user.setRole("LIBRARIAN");
+                break;
+            case EXPERT_TOKEN:
+                user.setRole("EXPERT");
+                break;
+            default:
+                return false; // 无效的通行口令
+        }
+
         // 检查用户名是否已存在
         if (userMapper.selectOne(new QueryWrapper<User>().eq("username", user.getUsername())) != null) {
             return false; // 用户名已存在
