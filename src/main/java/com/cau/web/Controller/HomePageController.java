@@ -1,35 +1,38 @@
 package com.cau.web.Controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cau.web.dto.ApiResponseNormal;
+import com.cau.web.dto.ArticleSearchRequest;
 import com.cau.web.entity.Article;
 import com.cau.web.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @RestController
+@RequestMapping("/api")
 public class HomePageController {
 
     @Autowired
-    private ArticleService articleService; // 假设有一个名为ArticleService的服务类来处理文章相关的业务逻辑
+    private ArticleService articleService;
 
-    // 获取时间降序全部文章或根据筛选条件搜索文章
-    @GetMapping("/homepage")
-    public List<Article> getHomepageContent(@RequestParam(required = false) String title,
-                                            @RequestParam(required = false) String author,
-                                            @RequestParam(required = false) String postAgency,
-                                            @RequestParam(required = false) String text,
-                                            @RequestParam(required = false) LocalDate startDate,
-                                            @RequestParam(required = false) LocalDate endDate,
-                                            @RequestParam(required = false) String nation,
-                                            @RequestParam(required = false) String domain,
-                                            @RequestParam(required = false) String subject) {
-        // 如果没有筛选条件，则获取全部文章
-        if (title == null && author == null && postAgency == null && text == null && startDate == null && endDate == null && nation == null && domain == null && subject == null) {
-            return articleService.getAllArticles(); // 获取最新科技报道
+    @PostMapping("/homepage")
+    public ApiResponseNormal<Page<Article>> getHomepageContent(@RequestBody ArticleSearchRequest request) {
+        if (request.isEmpty()) {
+            return new ApiResponseNormal<>(200, articleService.getAllArticles(request.getPageNumber(), request.getPageSize()), "检索成功"
+        );
         }
-        // 根据筛选条件搜索文章
-        return articleService.searchArticles(title, author, postAgency, text, startDate, endDate, nation, domain, subject);
+        return new ApiResponseNormal<>(200, articleService.searchArticles(
+                request.getTitle(),
+                request.getAuthor(),
+                request.getInfo_type(),
+                request.getPostAgency(),
+                request.getText(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getNation(),
+                request.getDomain(),
+                request.getSubject(),
+                request.getPageNumber(),
+                request.getPageSize()), "检索成功");
     }
 }

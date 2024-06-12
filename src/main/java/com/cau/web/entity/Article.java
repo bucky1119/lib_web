@@ -1,12 +1,29 @@
 package com.cau.web.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 @TableName("web_data_table")
 public class Article {
+    public Double getAverageRating() {
+        return averageRating;
+    }
 
-    private Long id;
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+    @TableId
+    private Integer id;
     private String title;
     private String author;
     private String infoType;
@@ -17,17 +34,22 @@ public class Article {
     private String domain;
     private String subject;
     private String text;
+    @TableField("average_rating")
+    private Double averageRating;
+
+    @TableField("rating_count")
+    private Integer ratingCount;
 
     // 构造方法
     public Article() {
     }
 
     // Getter 和 Setter 方法
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

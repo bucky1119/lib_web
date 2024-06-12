@@ -1,10 +1,12 @@
 package com.cau.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cau.web.entity.Article;
 import com.cau.web.mapper.ArticleMapper;
 import com.cau.web.service.ArticleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,22 +14,33 @@ import java.util.List;
 
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @Override
     public boolean saveArticle(Article article) {
+        Integer maxId = this.getMaxId();
+        if (maxId == null) {
+            maxId = 0;
+        }
+        article.setId(maxId + 1);
         return this.save(article);
     }
 
     @Override
-    public Article getArticleById(Long id) {
+    public Article getArticleById(Integer id) {
         return this.getById(id);
     }
 
     @Override
-    public List<Article> getAllArticles() {
+    public Page<Article> getAllArticles(int pageNumber, int pageSize) {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("date"); // 按照创建时间降序排序
-        return this.list(queryWrapper);
+
+        // 创建分页对象
+        Page<Article> page = new Page<>(pageNumber, pageSize);
+        // 执行分页查询
+        return this.page(page, queryWrapper);
     }
 
     @Override
@@ -50,8 +63,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public List<Article> searchArticles(String title, String author, String postAgency,String text,LocalDate startDate, LocalDate endDate, String nation, String domain, String subject)
-    {
+    public Page<Article> searchArticles(String title, String author, String info_type, String postAgency, String text, LocalDate startDate, LocalDate endDate, String nation, String domain, String subject, int pageNumber, int pageSize) {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
 
         // 添加标题条件
@@ -64,11 +76,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             queryWrapper.like("author", author);
         }
 
-        if (postAgency != null && !postAgency.isEmpty()) {
-            queryWrapper.like("text", postAgency);
+        // 添加信息类型条件
+        if (info_type != null && !info_type.isEmpty()) {
+            queryWrapper.like("info_type", info_type);
         }
 
-        //添加正文条件
+        // 添加发布机构条件
+        if (postAgency != null && !postAgency.isEmpty()) {
+            queryWrapper.like("post_agency", postAgency);
+        }
+
+        // 添加正文条件
         if (text != null && !text.isEmpty()) {
             queryWrapper.like("text", text);
         }
@@ -97,7 +115,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             queryWrapper.eq("subject", subject);
         }
 
-        return this.list(queryWrapper);
+        // 创建分页对象
+        Page<Article> page = new Page<>(pageNumber, pageSize);
+
+        // 执行分页查询
+        return this.page(page, queryWrapper);
+    }
+    @Override
+    public Integer getMaxId() {
+
+        return articleMapper.getMaxId();
     }
 }
-
