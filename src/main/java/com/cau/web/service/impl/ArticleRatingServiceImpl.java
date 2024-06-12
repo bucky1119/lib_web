@@ -1,5 +1,6 @@
 package com.cau.web.service.impl;
 
+import com.cau.web.dto.AverageScoreResponse;
 import com.cau.web.mapper.ArticleRatingMapper;
 import com.cau.web.service.ArticleRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class ArticleRatingServiceImpl implements ArticleRatingService {
     }
 
     @Override
-    public double getAverageValueScore(Integer articleId) {
-        return articleRatingMapper.calculateAverageValueScore(articleId);
+    public AverageScoreResponse getAverageValueScore(Integer articleId) {
+        return articleRatingMapper.calculateAverageScores(articleId);
     }
 }

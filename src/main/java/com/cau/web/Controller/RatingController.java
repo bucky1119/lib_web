@@ -1,5 +1,6 @@
 package com.cau.web.Controller;
 
+import com.cau.web.dto.AverageScoreResponse;
 import com.cau.web.dto.ApiResponseNormal;
 import com.cau.web.dto.RatingRequest;
 import com.cau.web.service.ArticleRatingService;
@@ -22,8 +23,8 @@ public class RatingController {
     }
 
     @GetMapping("/average/{articleId}")
-    public ApiResponseNormal<Double> getAverageValueScore(@PathVariable Integer articleId) {
-        double averageValueScore = ratingService.getAverageValueScore(articleId);
-        return new ApiResponseNormal<>(200, averageValueScore, "获取平均评分成功");
+    public ApiResponseNormal<AverageScoreResponse> getAverageValueScore(@PathVariable Integer articleId) {
+        AverageScoreResponse averageScores = ratingService.getAverageValueScore(articleId);
+        return new ApiResponseNormal<>(200, averageScores, "获取平均评分成功");
     }
 }

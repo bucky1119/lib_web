@@ -8,6 +8,7 @@ public class RatingRequest {
     private int industryImpactScore;
 
     // Getters and Setters
+
     public Integer getExpertId() {
         return expertId;
     }
