@@ -3,6 +3,7 @@ package com.cau.web.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 @TableName("web_data_table")
@@ -29,6 +30,7 @@ public class Article {
     private String infoType;
     private String postAgency;
     private String nation;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
     private String linkUrl;
     private String domain;
