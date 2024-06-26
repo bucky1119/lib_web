@@ -14,18 +14,20 @@
 
         <el-form-item prop="username">
           <span class="svg-container">
-            <svg-icon icon-class="user" />
+            <!-- <svg-icon icon-class="user" /> -->
+            用户名
           </span>
-          <el-input ref="username" v-model="loginForm.username" placeholder="Username" name="username" type="text"
-            tabindex="1" auto-complete="on" />
+          <el-input ref="username" v-model="loginForm.username" name="username" type="text" tabindex="1"
+            autocomplete="off" />
         </el-form-item>
 
         <el-form-item prop="password">
           <span class="svg-container">
-            <svg-icon icon-class="password" />
+            <!-- <svg-icon icon-class="password" /> -->
+            密码
           </span>
-          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-            placeholder="Password" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
+          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" name="password"
+            tabindex="2" autocomplete="off" />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
@@ -54,8 +56,8 @@
     {
       const validateUsername = (rule, value, callback) =>
       {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
+        if (!value) {
+          callback(new Error('请输入用户名'))
         } else {
           callback()
         }
@@ -63,15 +65,15 @@
       const validatePassword = (rule, value, callback) =>
       {
         if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
+          callback(new Error('请输入密码长度不少于六位'))
         } else {
           callback()
         }
       }
       return {
         loginForm: {
-          username: 'admin',
-          password: '111111'
+          username: '',
+          password: ''
         },
         loginRules: {
           username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -114,12 +116,17 @@
             {
               this.$router.push({ path: this.redirect || '/' })
               this.loading = false
+              this.$message({
+                message: '登录成功！',
+                type: 'success'
+              });
             }).catch(() =>
             {
               this.loading = false
             })
           } else {
-            console.log('error submit!!')
+            // console.log('error submit!!')
+            this.$message.error('登录失败，请稍后再试');
             return false
           }
         })
@@ -138,7 +145,7 @@
   /* 修复input 背景不协调 和光标变色 */
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-  $bg: #283443;
+  $bg: #e5e5e5;
   $light_gray: #696969;
   $cursor: #696969;
 
@@ -236,7 +243,7 @@
       padding: 6px 5px 6px 15px;
       color: $dark_gray;
       vertical-align: middle;
-      width: 30px;
+      /* width: 30px; */
       display: inline-block;
     }
 

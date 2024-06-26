@@ -8,7 +8,8 @@
     <div class="right-menu">
       <div class="user-actions">
         <!-- <div class="sign-in-action" @click="handlSignIn">注册</div> -->
-        <div class="log-in-action" @click="handleLogIn">登录</div>
+        <div v-if="!hasToken" class="log-in-action" @click="handleLogIn">登录{{hasToken}}</div>
+        <div v-else>欢迎：{{username}}</div>
       </div>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -27,7 +28,7 @@
           <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item divided @click.native="logout" v-if="hasToken">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -41,7 +42,7 @@
   import { mapGetters } from 'vuex'
   import Breadcrumb from '@/components/Breadcrumb'
   import Hamburger from '@/components/Hamburger'
-  import { getToken } from "@/utils/auth"; // get token from cookie
+  import { getToken, removeToken, getUsername, removeUsername } from "@/utils/auth"; // get token from cookie
 
   export default {
     components: {
@@ -53,12 +54,22 @@
         'sidebar',
         'avatar'
       ]),
-      // hasToken()
-      // {
-      //   // determine whether the user has logged in
-      //   const hasToken = getToken();
-      //   return getToken()
-      // }
+      hasToken ()
+      {
+        // determine whether the user has logged in
+        const token = getToken();
+        return token
+      },
+      username ()
+      {
+        const name = getUsername();
+        return name;
+      },
+      avatar ()
+      {
+        const src = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
+        return src;
+      }
     },
     methods: {
       // toggleSideBar()
@@ -67,8 +78,11 @@
       // },
       async logout ()
       {
-        await this.$store.dispatch('user/logout')
-        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        // await this.$store.dispatch('user/logout')
+        removeToken();
+        removeUsername();
+        this.$router.push(`/login`)
+        location.reload();
       },
 
 

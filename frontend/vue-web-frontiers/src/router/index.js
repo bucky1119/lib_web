@@ -60,7 +60,7 @@ export const constantRoutes = [
         meta: { title: "首页", icon: "dashboard" },
       },
       {
-        path: "articleMark",
+        path: "articleMark/:id",
         name: "ArticleMark",
         component: () => import("@/views/articleMark/index"),
         meta: { title: "评分", icon: "form" },

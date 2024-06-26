@@ -7,18 +7,20 @@
           </el-table-column>
           <el-table-column prop="role" label="用户角色">
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column prop="message" label="角色说明">
+          </el-table-column>
+          <el-table-column prop="code" label="授权码">
+          </el-table-column>
+          <!-- <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleEditDialog(scope.$index, scope.row,'user')">编辑</el-button>
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row,'role')">删除</el-button>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="角色管理" name="roleManage">
-        <!-- <div> -->
+      <!-- <el-tab-pane label="角色管理" name="roleManage">
         <el-button @click="handleAdd">添加</el-button>
-        <!-- </div> -->
         <el-table :data="roleList" stripe>
           <el-table-column prop="role" label="角色">
           </el-table-column>
@@ -31,11 +33,10 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-tab-pane>
-      <el-tab-pane label="价值度管理" name="valueManage">价值度管理</el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
     <!-- 编辑弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+    <!-- <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
       <div v-if="dialogTitle == '编辑用户角色'">
         <el-form ref="userRoleForm" :model="userRoleForm" label-width="80px">
           <el-form-item label="用户名">
@@ -60,9 +61,9 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="update">修 改</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
     <!-- 添加角色弹窗 -->
-    <el-dialog title="添加角色" :visible.sync="addDialog" width="50%" :before-close="handleClose">
+    <!-- <el-dialog title="添加角色" :visible.sync="addDialog" width="50%" :before-close="handleClose">
 
       <el-form ref="addRoleForm" :model="addRoleForm" label-width="80px">
         <el-form-item label="角色">
@@ -77,7 +78,7 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addRole">提 交</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -125,25 +126,23 @@
         ],
         userList: [
           {
-            username: "Dr.ken",
-            role: "专家学者用户，运营管理用户"
+            username: "Dr.ken1",
+            role: "专家学者用户",
+            message: '支持文章评分功能',
+            code: 'expertSecret',
           },
           {
-            username: "Dr.ken",
-            role: "专家学者用户"
+            username: "Dr.ken2",
+            role: "运营管理用户",
+            message: '支持文章增删改、统计等功能',
+            code: 'librarianSecret',
           },
           {
-            username: "Dr.ken",
-            role: "运营管理用户"
+            username: "Dr.ken3",
+            role: "系统管理员",
+            message: '系统管理',
+            code: 'adminSecret',
           },
-          {
-            username: "Dr.ken",
-            role: "用户"
-          },
-          {
-            username: "Dr.ken",
-            role: "用户"
-          }
         ]
       };
     },

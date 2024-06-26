@@ -5,7 +5,7 @@
       <div class="web-title-en">Science Frontiers Hub</div>
     </div>
     <div class="form">
-      <el-form ref="signinForm" :model="signinForm" :rules="signinRules" class="login-form" auto-complete="on"
+      <el-form ref="signinForm" :model="signinForm" :rules="signinRules" class="login-form" autocomplete="off"
         label-position="left">
 
         <div class="title-container">
@@ -14,24 +14,26 @@
         <!-- 用户名 -->
         <el-form-item prop="username">
           <span class="svg-container">
-            <svg-icon icon-class="user" />
+            <!-- <svg-icon icon-class="user" /> -->
+            用户名
           </span>
-          <el-input ref="username" v-model="signinForm.username" placeholder="用户名" name="username" type="text"
-            tabindex="1" auto-complete="on" />
+          <el-input ref="username" v-model="signinForm.username" name="username" type="text" tabindex="1"
+            autocomplete="off" />
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
           <span class="svg-container">
-            <svg-icon icon-class="password" />
+            <!-- <svg-icon icon-class="password" /> -->
+            密码
           </span>
           <el-input :key="passwordType" ref="password" v-model="signinForm.password" :type="passwordType"
-            placeholder="密码" name="password" tabindex="2" auto-complete="on" />
+            name="password" tabindex="2" autocomplete="off" />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
         <!-- 二次确认密码 -->
-        <el-form-item prop="checkPass" v-if="signinForm.password">
+        <!-- <el-form-item prop="checkPass" v-if="signinForm.password">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
@@ -40,16 +42,17 @@
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 授权码 -->
-        <el-form-item prop="authcode">
+        <el-form-item prop="role_token">
           <span class="svg-container">
-            <svg-icon icon-class="password" />
+            <!-- <svg-icon icon-class="user" /> -->
+            授权码
           </span>
-          <el-input type="text" ref="authcode" v-model="signinForm.authcode" autocomplete="off" placeholder="输入授权码">
+          <el-input type="text" ref="role_token" v-model="signinForm.role_token" autocomplete="off" name="role_token"
+            tabindex="3">
           </el-input>
         </el-form-item>
-
         <el-button :loading="loading" style="width:100%;margin-bottom:30px;background: #696969; color: #fff;"
           @click.native.prevent="handleSignin">Signin</el-button>
 
@@ -64,7 +67,8 @@
 </template>
 
 <script>
-  // import { validUsername } from '@/utils/validate'
+  import { validRoleToken } from '@/utils/validate'
+  import axios from 'axios';
 
   export default {
     name: 'Signin',
@@ -86,34 +90,25 @@
           callback()
         }
       }
-      const validateCheckPass = (rule, value, callback) =>
+      const validateRoleToken = (rule, value, callback) =>
       {
-        if (!value) {
-          callback(new Error('请二次输入密码'))
+        if (!validRoleToken(value)) {
+          callback(new Error('请输入正确授权码'))
         } else {
           callback()
         }
       }
-      const validateAuthcode = (rule, value, callback) =>
-      {
-        if (!value) {
-          callback(new Error('请输入授权码'))
-        } else {
-          callback()
-        }
-      }
+
       return {
         signinForm: {
           username: '',
           password: '',
-          checkPass: '',
-          authcode: '',
+          role_token: '',
         },
         signinRules: {
           username: [{ required: true, trigger: 'blur', validator: validateUsername }],
           password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-          checkPass: [{ required: true, trigger: 'blur', validator: validateCheckPass }],
-          authcode: [{ required: true, trigger: 'blur', validator: validateAuthcode }]
+          role_token: [{ required: true, trigger: 'blur', validator: validateRoleToken }]
         },
         loading: false,
         passwordType: 'password',
@@ -142,22 +137,65 @@
           this.$refs.password.focus()
         })
       },
+      sigin ()
+      {
+        const params = {
+          username: this.signinForm.username,
+          password: this.signinForm.password,
+          role_token: this.signinForm.role_token,
+        }
+        this.$store.dispatch('user/signin', params)
+          .then(response =>
+          {
+            // 处理响应数据
+            this.loading = false
+            if (!this.loading) {
+              this.handleLogin()
+            }
+          })
+          .catch(error =>
+          {
+            // 处理错误情况
+            console.error(error);
+            this.loading = false
+            // 注册失败，请稍后再试
+            this.$message.error('注册失败，请稍后再试');
+            // console.log('error submit!!')
+            return false
+          });
+        // await ;
+      },
       handleSignin ()
       {
         this.$refs.signinForm.validate(valid =>
         {
           if (valid) {
             this.loading = true
-            this.$store.dispatch('user/signin', this.signinForm).then(() =>
+            this.sigin();
+          }
+        })
+      },
+      handleLogin ()
+      {
+        this.$refs.signinForm.validate(valid =>
+        {
+          if (valid) {
+            this.loading = true
+            this.$store.dispatch('user/login', this.signinForm).then(() =>
             {
               this.$router.push({ path: this.redirect || '/' })
               this.loading = false
+              this.$message({
+                message: '登录成功！',
+                type: 'success'
+              });
             }).catch(() =>
             {
               this.loading = false
             })
           } else {
-            console.log('error submit!!')
+            // console.log('error submit!!')
+            this.$message.error('登录失败，请稍后再试');
             return false
           }
         })
@@ -175,7 +213,7 @@
   /* 修复input 背景不协调 和光标变色 */
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-  $bg: #283443;
+  $bg: #e5e5e5;
   $light_gray: #696969;
   $cursor: #696969;
 
@@ -273,7 +311,7 @@
       padding: 6px 5px 6px 15px;
       color: $dark_gray;
       vertical-align: middle;
-      width: 30px;
+      /* width: 30px; */
       display: inline-block;
     }
 
