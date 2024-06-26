@@ -3,8 +3,8 @@
     <!-- 价值度分值展示 -->
     <div class="block">
       <div style="display: flex;align-items: center;">
-        <div v-if="value" class="value-label">价值度</div>
-        <div class="value">{{value?value:'暂无评分'}}</div>
+        <div v-if="valueScore.averageValueScore" class="value-label">平均价值度</div>
+        <div class="value">{{valueScore.averageValueScore?valueScore.averageValueScore:'暂无评分'}}</div>
       </div>
       <!--  -->
     </div>
@@ -22,17 +22,23 @@
               <div v-for="(item, index) in valueList " :key="index">
                 <div class="user-info">
                   <div class="logo"> </div>
-                  <div class="username">{{item.userName}}</div>
+                  <div class="username">{{item.expertId}}</div>
                 </div>
-                <div class="value-part" v-for="(rate,ind) in item.rateValue" :key="ind">
-                  <div style="color: #9a9a96;">{{rate.label}}</div>
-                  <el-slider class="read-slider" v-model="rate.value" :max=10 disabled />
+                <div class="value-part">
+                  <div style="color: #9a9a96;">创新度</div>
+                  <el-slider class="read-slider" v-model="item.innovationScore" :max=10 disabled />
+                  <div style="color: #9a9a96;">颠覆性</div>
+                  <el-slider class="read-slider" v-model="item.disruptionScore" :max=10 disabled />
+                  <div style="color: #9a9a96;">前沿性</div>
+                  <el-slider class="read-slider" v-model="item.frontierScore" :max=10 disabled />
+                  <div style="color: #9a9a96;">产业影响</div>
+                  <el-slider class="read-slider" v-model="item.industryImpactScore" :max=10 disabled />
 
                 </div>
               </div>
             </div>
             <div v-else class="value">暂无记录</div>
-            <!-- </div> -->
+
           </el-scrollbar>
         </div>
 
@@ -41,23 +47,23 @@
       <!-- 文章评分 -->
       <el-col :span="15">
         <div class="rate-part">
-          <div class="title-part" style="cursor: pointer;" @click="handleRateSetting">
+          <div class="title-part" style="cursor: pointer;">
             <span style="margin-right: 18px;">文章评分</span>
-            <i class="el-icon-setting"></i>
+            <!-- <i class="el-icon-setting"></i> -->
           </div>
           <div class="label">创新度</div>
-          <el-slider class="write-slider" v-model="rateForm.create_tag" :max=10 :min="1" />
+          <el-slider class="write-slider" v-model="rateForm.create_tag" :max=10 :min="0" />
           <div class="label">颠覆性</div>
-          <el-slider class="write-slider" v-model="rateForm.overturn_tag" :max=10 :min="1" />
+          <el-slider class="write-slider" v-model="rateForm.overturn_tag" :max=10 :min="0" />
           <div class="label">前沿性</div>
-          <el-slider class="write-slider" v-model="rateForm.frontier_tag" :max=10 :min="1" />
+          <el-slider class="write-slider" v-model="rateForm.frontier_tag" :max=10 :min="0" />
           <div class="label">产业影响</div>
-          <el-slider class="write-slider" v-model="rateForm.influnce_tag" :max=10 :min="1" />
+          <el-slider class="write-slider" v-model="rateForm.influnce_tag" :max=10 :min="0" />
           <el-button class="btn" @click="onSubmit">提交</el-button>
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="价值度指标设置" :visible.sync="settingDialog" width="80%" :before-close="handleClose">
+    <!-- <el-dialog title="价值度指标设置" :visible.sync="settingDialog" width="80%" :before-close="handleClose">
       <div>
         修改价值度指标内容
       </div>
@@ -65,24 +71,42 @@
         <el-button @click="settingDialog = false">取 消</el-button>
         <el-button type="primary" @click="settingDialog = false">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
   import { valueList } from "@/utils/constant.js";
+  import { mapGetters } from 'vuex'
+  import { getUserId } from '@/utils/auth'
   export default {
     name: 'ArticleMark',
+    computed: {
+      ...mapGetters([
+        'averScore',
+        'ratingHist',
+      ])
+    },
     data ()
     {
       return {
-        value: 9.1,
-        valueList: valueList,
+        id: '',
+        userId: '',
+        valueScore: {
+          averageDisruptionScore: 0,
+          averageFrontierScore: 0,
+          averageIndustryImpactScore: 0,
+          averageInnovationScore: 0,
+          averageValueScore: 0
+        },
+        valueList: [],
         rateForm: {
           create_tag: 0,
           overturn_tag: 0,
           frontier_tag: 0,
           influnce_tag: 0,
+          expertId: '',
+          articleId: '',
         },
         settingDialog: false,
 
@@ -90,26 +114,55 @@
     },
     methods: {
       // 评分信息初始化
-      init ()
+      async init ()
       {
         // todo:查询价值度
+        await this.getValue();
         // todo:查询评分记录
+        await this.getRateHist();
       },
       // 提交评分
       onSubmit ()
       {
-        this.$message('submit!')
         // todo:修改并提交评分
+        this.$store.dispatch('dashboard/rateArticle', this.rateForm).then(async () =>
+        {
+          await this.getValue();
+          this.$message({
+            text: '提交成功!',
+            type: 'success'
+          })
+        }).catch(() =>
+        {
+          this.$message.error('提交失败，请稍后重试')
+        })
       },
       // 查询价值度
       getValue ()
       {
         // todo:调用价值度接口
+        this.$store.dispatch('dashboard/getAverScore', this.id).then(() =>
+        {
+          this.valueScore.averageValueScore = this.averScore.averageValueScore;
+          this.valueScore.averageDisruptionScore = this.averScore.averageDisruptionScore;
+          this.valueScore.averageFrontierScore = this.averScore.averageFrontierScore;
+          this.valueScore.averageIndustryImpactScore = this.averScore.averageIndustryImpactScore;
+          this.valueScore.averageInnovationScore = this.averScore.averageInnovationScore;
+          // 打分区展示平均分
+          this.rateForm.create_tag = this.averScore.averageInnovationScore;
+          this.rateForm.overturn_tag = this.averScore.averageDisruptionScore;
+          this.rateForm.frontier_tag = this.averScore.averageFrontierScore;
+          this.rateForm.influnce_tag = this.averScore.averageIndustryImpactScore;
+        })
       },
       // 查询评分记录
       getRateHist ()
       {
         // todo:调用评分记录接口
+        this.$store.dispatch('dashboard/getHistoryRate', this.id).then(() =>
+        {
+          this.valueList = this.ratingHist;
+        })
       },
       // 打开价值度指标设置弹窗
       handleRateSetting ()
@@ -129,6 +182,9 @@
     },
     created ()
     {
+      this.id = this.$route.params.id;
+      this.rateForm.articleId = this.$route.params.id;
+      this.rateForm.expertId = getUserId();
       this.init()
     }
   }

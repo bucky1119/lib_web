@@ -14,8 +14,8 @@ export function isExternal(path) {
  * @param {string} str
  * @returns {Boolean}
  */
-export function validUsername(str) {
-  // const valid_map = ['admin', 'editor']
-  // return valid_map.indexOf(str.trim()) >= 0
-  return str.length > 0 ? true : false;
+export function validRoleToken(str) {
+  const valid_map = ["adminSecret", "librarianSecret", "expertSecret"];
+  return valid_map.indexOf(str.trim()) >= 0;
+  librarianSecret;
 }

@@ -40,8 +40,7 @@ module.exports = {
     proxy: {
       "/api": {
         // target: "http://10.6.0.226:8080/",
-        target:
-          "https://ea24-2001-250-209-2000-487d-e80b-c23d-c039.ngrok-free.app",
+        target: "https://oarfish-flowing-kodiak.ngrok-free.app",
         ws: true,
         changeOrigin: true,
         pathRewrite: {
