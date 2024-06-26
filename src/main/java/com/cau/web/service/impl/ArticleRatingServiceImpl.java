@@ -16,14 +16,14 @@ public class ArticleRatingServiceImpl implements ArticleRatingService {
     private ArticleRatingMapper articleRatingMapper;
 
     @Override
-    public String rateArticle(Integer articleId, Integer expertId, int innovationScore, int disruptionScore, int frontierScore, int industryImpactScore) {
+    public String rateArticle(Integer articleId, Integer expertId, int innovationScore, int disruptionScore, int frontierScore, int industryImpactScore, int additionalScore) {
         // 在插入评分之前，检查是否已经存在评分
         if (articleRatingMapper.existsByArticleIdAndExpertId(articleId, expertId)) {
             return "专家已对该文章评分";
         }
 
         // 插入评分
-        articleRatingMapper.insert(articleId, expertId, innovationScore, disruptionScore, frontierScore, industryImpactScore);
+        articleRatingMapper.insert(articleId, expertId, innovationScore, disruptionScore, frontierScore, industryImpactScore, additionalScore);
         return "评分已保存";
     }
 

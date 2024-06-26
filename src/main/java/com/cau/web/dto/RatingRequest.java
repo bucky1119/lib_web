@@ -6,8 +6,17 @@ public class RatingRequest {
     private int disruptionScore;
     private int frontierScore;
     private int industryImpactScore;
+    private int additionalScore;
 
     // Getters and Setters
+
+    public int getAdditionalScore() {
+        return additionalScore;
+    }
+
+    public void setAdditionalScore(int additionalScore) {
+        this.additionalScore = additionalScore;
+    }
 
     public Integer getExpertId() {
         return expertId;

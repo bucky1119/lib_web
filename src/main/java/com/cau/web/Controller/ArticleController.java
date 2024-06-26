@@ -18,7 +18,7 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @Secured("ROLE_LIBRARIAN")
+    @Secured({"ROLE_LIBRARIAN", "ROLE_ADMIN"})
     @PostMapping("/add")
     public ApiResponseNormal<Article> addArticle(@RequestBody Article article) {
         boolean isSuccess = articleService.saveArticle(article);
@@ -29,7 +29,7 @@ public class ArticleController {
         }
     }
 
-    @Secured("ROLE_LIBRARIAN")
+    @Secured({"ROLE_LIBRARIAN", "ROLE_ADMIN"})
     @PutMapping("/{id}")
     public ApiResponseNormal<Article> updateArticle(@PathVariable Integer id, @RequestBody Article article) {
         article.setId(id);
@@ -41,7 +41,7 @@ public class ArticleController {
         }
     }
 
-    @Secured("ROLE_LIBRARIAN")
+    @Secured({"ROLE_LIBRARIAN", "ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public ApiResponseNormal<Void> deleteArticle(@PathVariable Long id) {
         boolean isSuccess = articleService.deleteArticleById(id);

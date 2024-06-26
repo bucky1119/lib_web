@@ -5,9 +5,18 @@ public class AverageScoreResponse {
     private double averageDisruptionScore;
     private double averageFrontierScore;
     private double averageIndustryImpactScore;
+    private double averageAdditionalScore;
     private double averageValueScore;
 
     // Getters and Setters
+
+    public double getAverageAdditionalScore() {
+        return averageAdditionalScore;
+    }
+
+    public void setAverageAdditionalScore(double averageAdditionalScore) {
+        this.averageAdditionalScore = averageAdditionalScore;
+    }
 
     public double getAverageInnovationScore() {
         return averageInnovationScore;
