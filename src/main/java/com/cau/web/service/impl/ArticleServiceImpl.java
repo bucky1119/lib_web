@@ -19,6 +19,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public boolean saveArticle(Article article) {
+        if(article.getDate() == null )
+            return false;
         Integer maxId = this.getMaxId();
         if (maxId == null) {
             maxId = 0;

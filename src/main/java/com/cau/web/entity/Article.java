@@ -8,21 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 @TableName("web_data_table")
 public class Article {
-    public Double getAverageRating() {
-        return averageRating;
-    }
 
-    public void setAverageRating(Double averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public Integer getRatingCount() {
-        return ratingCount;
-    }
-
-    public void setRatingCount(Integer ratingCount) {
-        this.ratingCount = ratingCount;
-    }
     @TableId
     private Integer id;
     private String title;
@@ -36,11 +22,8 @@ public class Article {
     private String domain;
     private String subject;
     private String text;
-    @TableField("average_rating")
-    private Double averageRating;
-
-    @TableField("rating_count")
-    private Integer ratingCount;
+    @TableField("formatted_id")
+    private String formattedId; // 新增的字段
 
     // 构造方法
     public Article() {
@@ -49,6 +32,14 @@ public class Article {
     // Getter 和 Setter 方法
     public Integer getId() {
         return id;
+    }
+
+    public String getFormattedId() {
+        return formattedId;
+    }
+
+    public void setFormattedId(String formattedId) {
+        this.formattedId = formattedId;
     }
 
     public void setId(Integer id) {
